@@ -8,8 +8,6 @@ from app.models.user import User
 from app.repositories import UserRepository
 from app.schemas.schemas import TokenResponse, UserOut, PasswordChange
 
-# Temporary import for seeding
-from seed import seed
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -46,11 +44,3 @@ def change_password(
     repo = UserRepository(db)
     current_user.hashed_password = hash_password(payload.new_password)
     repo.save(current_user)
-
-
-# Temporary endpoint to seed the database (remove after use)
-@router.post("/seed")
-def run_seed():
-    """Seed the database with initial data. Remove this endpoint after seeding."""
-    seed()
-    return {"message": "Database seeded successfully"} 
