@@ -1,0 +1,267 @@
+/* ═══════════════════════════════════════════════════════════
+   layout.css  |  Sidebar, header, main content shell
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: linear-gradient(180deg, var(--green-dark) 0%, #0f0c30 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+  box-shadow: 4px 0 24px rgba(30,22,86,.18);
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 0% 0%,   rgba(200,151,58,.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(26,127,189,.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Brand block */
+.sidebar-brand {
+  padding: 1.2rem 1.4rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .5rem;
+}
+
+.brand-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 5px rgba(200,151,58,.18), 0 4px 16px rgba(0,0,0,.3);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: .2rem;
+}
+
+.brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hide the old SVG inside brand-icon if still present */
+.brand-icon svg { display: none; }
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: .95rem;
+  color: var(--white);
+  line-height: 1.3;
+}
+.brand-name span { color: var(--gold-light); }
+
+.brand-sub {
+  font-size: .68rem;
+  color: rgba(255,255,255,.4);
+  letter-spacing: .05em;
+}
+
+/* Nav */
+.sidebar-nav {
+  padding: 1rem 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+
+.nav-section-label {
+  font-size: .65rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+  padding: .8rem 1.4rem .3rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .7rem 1.4rem;
+  font-size: .88rem;
+  color: rgba(255,255,255,.6);
+  cursor: pointer;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: background .15s, color .15s, border-color .15s;
+}
+
+.nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+.nav-item .nav-badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: var(--green-dark);
+  font-size: .66rem;
+  font-weight: 700;
+  padding: .12rem .42rem;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.nav-item:hover { background: rgba(255,255,255,.06); color: var(--white); }
+
+.nav-item.active {
+  background: rgba(200,151,58,.14);
+  color: var(--gold-light);
+  border-left-color: var(--gold);
+}
+
+/* User card */
+.sidebar-bottom {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: .9rem 1.2rem;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.user-avatar {
+  width: 34px; height: 34px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; font-weight: 700;
+  color: var(--green-dark);
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-name {
+  font-size: .87rem;
+  color: var(--white);
+  font-weight: 600;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+  max-height: 2.4em;
+}
+.user-role {
+  font-size: .7rem;
+  color: rgba(255,255,255,.4);
+  text-transform: capitalize;
+}
+
+.logout-btn {
+  background: none; border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,.35);
+  padding: .3rem;
+  border-radius: 6px;
+  transition: color .15s, background .15s;
+  display: flex; align-items: center;
+}
+.logout-btn:hover { color: #ef4444; background: rgba(239,68,68,.1); }
+.logout-btn svg { width: 16px; height: 16px; }
+
+/* Ghana flag strip */
+.ghana-strip { height: 4px; display: flex; }
+.ghana-strip div { flex: 1; }
+.ghana-strip .r { background: #ce1126; }
+.ghana-strip .g { background: #006b3f; }
+.ghana-strip .y { background: #fcd116; }
+
+/* ── Header ─────────────────────────────────────────────── */
+.header {
+  height: var(--header-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--ocean) 50%, var(--green) 100%);
+}
+
+.header-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--green-dark);
+  flex: 1;
+}
+
+.header-date {
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.notif-btn {
+  position: relative;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: .4rem .6rem;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex; align-items: center;
+  transition: border-color .15s, color .15s;
+}
+.notif-btn:hover { border-color: var(--green); color: var(--green); }
+.notif-btn svg { width: 18px; height: 18px; }
+
+.notif-dot {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 1.5px solid var(--white);
+  display: none;
+}
+.notif-dot.show { display: block; }
+
+/* ── Main shell ─────────────────────────────────────────── */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  padding: 2rem;
+  flex: 1;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main    { margin-left: 0; }
+  .content { padding: 1rem; }
+}

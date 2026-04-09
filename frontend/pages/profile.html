@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — Ada East Digital Filing System</title>
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+<div id="sidebar-mount"></div>
+
+<div class="main">
+  <header class="header">
+    <div class="header-title">My Profile</div>
+    <div class="header-date" id="headerDate"></div>
+    <button class="notif-btn" type="button" title="Notifications" aria-label="Notifications" id="notifBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span class="notif-dot" id="notifDot"></span>
+    </button>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>My Profile</h2>
+        <p>View your account details and change your password</p>
+      </div>
+    </div>
+
+    <div style="max-width: 600px;">
+
+      <!-- Profile info card -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <span class="card-title">Account Information</span>
+        </div>
+        <div class="card-body">
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Full Name</div>
+              <div class="detail-value" id="profileName">—</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Email</div>
+              <div class="detail-value" id="profileEmail">—</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Role</div>
+              <div class="detail-value" id="profileRole">—</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Department</div>
+              <div class="detail-value" id="profileDept">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change password card -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Change Password</span>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-error hidden" id="pwAlert">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 0a10 10 0 100 20A10 10 0 0010 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/></svg>
+            <span></span>
+          </div>
+          <div class="alert alert-success hidden" id="pwSuccess">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 0a10 10 0 100 20A10 10 0 0010 0zm-1 14.414L4.293 9.707l1.414-1.414L9 11.586l5.293-5.293 1.414 1.414L9 14.414z"/></svg>
+            <span>Password changed successfully.</span>
+          </div>
+          <form id="pwForm" novalidate>
+            <div class="form-group">
+              <label>Current Password <span class="required">*</span></label>
+              <input type="password" id="f_current_password" placeholder="Enter your current password" required />
+            </div>
+            <div class="form-group">
+              <label>New Password <span class="required">*</span></label>
+              <input type="password" id="f_new_password" placeholder="At least 8 characters" required />
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password <span class="required">*</span></label>
+              <input type="password" id="f_confirm_password" placeholder="Re-enter new password" required />
+            </div>
+            <button class="btn btn-primary" type="button" id="changePasswordBtn">
+              <span class="btn-text">Update Password</span>
+              <div class="spinner"></div>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases and runtime files
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads and generated files
+backend/uploads/incoming/*
+backend/uploads/outgoing/*
+!backend/uploads/incoming/.gitkeep
+!backend/uploads/outgoing/.gitkeep
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node artifacts (if frontend tooling is added later)
+node_modules/
+dist/
+build/

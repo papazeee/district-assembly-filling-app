@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found — Ada East Digital Filing System</title>
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .error-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .error-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 3rem 2.5rem;
+      text-align: center;
+      max-width: 460px;
+      width: 100%;
+    }
+    .error-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--error-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: var(--error);
+    }
+    .error-icon svg { width: 32px; height: 32px; }
+    .error-code {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      color: var(--green-dark);
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+    .error-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      margin-bottom: .6rem;
+    }
+    .error-msg {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .error-actions {
+      display: flex;
+      gap: .75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .ghana-bar {
+      height: 4px;
+      display: flex;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    .ghana-bar div { flex: 1; }
+    .ghana-bar .r { background: #ce1126; }
+    .ghana-bar .g { background: #006b3f; }
+    .ghana-bar .y { background: #fcd116; }
+  </style>
+</head>
+<body>
+<div class="error-shell">
+  <div class="error-card">
+    <div class="error-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <div class="error-code" id="errorCode">404</div>
+    <div class="error-title" id="errorTitle">Page Not Found</div>
+    <div class="error-msg" id="errorMsg">
+      The page you're looking for doesn't exist or you don't have permission to access it.
+    </div>
+    <div class="error-actions">
+      <a href="dashboard.html" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Go to Dashboard
+      </a>
+      <a href="javascript:history.back()" class="btn btn-outline">Go Back</a>
+    </div>
+    <div class="ghana-bar">
+      <div class="r"></div><div class="g"></div><div class="y"></div>
+      <div class="r"></div><div class="g"></div><div class="y"></div>
+      <div class="r"></div><div class="g"></div><div class="y"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  // Show "Access Denied" variant when ?reason=denied is in URL
+  const reason = new URLSearchParams(window.location.search).get('reason');
+  if (reason === 'denied') {
+    document.getElementById('errorCode').textContent  = '403';
+    document.getElementById('errorTitle').textContent = 'Access Denied';
+    document.getElementById('errorMsg').textContent   =
+      'You don\'t have permission to view this page. Contact your administrator if you believe this is an error.';
+    document.title = 'Access Denied — Ada East Digital Filing System';
+  }
+</script>
+</body>
+</html>

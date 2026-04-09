@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Departments — Ada East Digital Filing System</title>
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+
+</head>
+<body>
+
+<div id="sidebar-mount"></div>
+
+<div class="main">
+  <header class="header">
+    <div class="header-title">Departments</div>
+    <div class="header-date" id="headerDate"></div>
+    <button class="notif-btn"  title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notif-dot" id="notifDot"></span></button>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Departments</h2>
+        <p>Manage the assembly's functional departments</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="openCreateBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Department
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Department Name</th><th>Code</th><th>Description</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="deptsBody">
+            <tr><td colspan="5" class="table-loading-cell">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Create / Edit Dept Modal ── -->
+<div class="modal-overlay" id="deptModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="deptModalTitle">Add Department</span>
+      <button type="button" class="modal-close" title="Close" aria-label="Close" onclick="closeModal('deptModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-error hidden" id="deptAlert">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 0a10 10 0 100 20A10 10 0 0010 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/></svg>
+        <span></span>
+      </div>
+      <form id="deptForm">
+        <input type="hidden" id="editDeptId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Department Name <span class="required">*</span></label>
+            <input type="text" id="f_name" placeholder="e.g. Finance" required />
+          </div>
+          <div class="form-group">
+            <label>Code <span class="required">*</span></label>
+            <input type="text" id="f_code" placeholder="e.g. FIN" maxlength="10" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="f_description" placeholder="Brief description of the department's function…"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('deptModal')">Cancel</button>
+      <button class="btn btn-primary" id="deptSubmitBtn">
+        <span class="btn-text">Save Department</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/departments.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Incoming Letters — Ada East Digital Filing System</title>
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+<div id="sidebar-mount"></div>
+
+<div class="main">
+  <header class="header">
+    <div class="header-title">Incoming Letters</div>
+    <div class="header-date" id="headerDate"></div>
+    <button class="notif-btn" type="button" title="Notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notif-dot" id="notifDot"></span></button>
+  </header>
+
+  <div class="content">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Incoming Letters</h2>
+        <p>Log, track and forward all incoming correspondence</p>
+      </div>
+      <div id="logBtnWrap">
+        <button class="btn btn-primary" id="openLogBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Log New Letter
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <input type="search" id="searchInput" placeholder="Search by subject, serial, sender…" />
+      <select id="statusFilter" aria-label="Filter by status" title="Filter by status">
+        <option value="">All Statuses</option>
+        <option value="RECEIVED_BY_RECORDS">At Records</option>
+        <option value="DIRECTOR_QUEUE">Director Queue</option>
+        <option value="WITH_DIRECTOR">With Director</option>
+        <option value="WITH_DCE">With DCE</option>
+        <option value="RETURNED_TO_DIRECTOR">Returned</option>
+        <option value="DISPATCHED_TO_DEPT">In Department</option>
+        <option value="CLOSED">Closed</option>
+      </select>
+      <button class="btn btn-outline btn-sm" id="refreshBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Refresh
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Serial No.</th>
+              <th>Reference</th>
+              <th>Subject</th>
+              <th>Sender</th>
+              <th>Date Received</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="lettersBody">
+            <tr><td colspan="7" class="table-loading-cell">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination is-hidden" id="pagination"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Log Letter Modal ── -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title">Log Incoming Letter</span>
+      <button class="modal-close" type="button" title="Close" aria-label="Close" onclick="closeModal('logModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-error hidden" id="logAlert">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 0a10 10 0 100 20A10 10 0 0010 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/></svg>
+        <span></span>
+      </div>
+      <form id="logForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject <span class="required">*</span></label>
+            <input type="text" id="f_subject" placeholder="e.g. Request for road repair" required />
+          </div>
+          <div class="form-group">
+            <label>Reference Number</label>
+            <input type="text" id="f_reference" placeholder="e.g. REF/2025/001" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sender Name <span class="required">*</span></label>
+            <input type="text" id="f_sender_name" placeholder="Full name of sender" required />
+          </div>
+          <div class="form-group">
+            <label>Sender Organisation</label>
+            <input type="text" id="f_sender_org" placeholder="Organisation or ministry" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date Received <span class="required">*</span></label>
+            <input type="date" id="f_date_received" required aria-label="Date received" title="Date received" />
+          </div>
+          <div class="form-group">
+            <label>Received By (Name) <span class="required">*</span></label>
+            <input type="text" id="f_received_by_name" placeholder="Name of recipient officer" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notes / Remarks</label>
+          <textarea id="f_notes" placeholder="Any additional notes…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Attach Document</label>
+          <div class="file-upload" id="fileUploadZone">
+            <input type="file" id="f_file" accept=".pdf,.jpg,.jpeg,.png,.tiff" aria-label="Attach incoming document" title="Attach incoming document" />
+            <div class="file-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <div class="file-upload-label"><strong>Click to upload</strong> or drag and drop</div>
+            <div class="file-upload-label file-upload-hint">PDF, JPG, PNG or TIFF · Max 10 MB</div>
+            <div class="file-upload-name" id="fileUploadName"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('logModal')">Cancel</button>
+      <button class="btn btn-primary" id="logSubmitBtn">
+        <span class="btn-text">Save Letter</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Letter Detail Modal ── -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="detailTitle">Letter Details</span>
+      <button class="modal-close" type="button" title="Close" aria-label="Close" onclick="closeModal('detailModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="detailBody">Loading…</div>
+    <div class="modal-footer" id="detailFooter"></div>
+  </div>
+</div>
+
+<!-- ── Forward / Dispatch Modal ── -->
+<div class="modal-overlay" id="actionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="actionTitle">Forward Letter</span>
+      <button class="modal-close" type="button" title="Close" aria-label="Close" onclick="closeModal('actionModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div id="deptSelectGroup" class="form-group is-hidden">
+        <label>Select Department <span class="required">*</span></label>
+        <select id="deptSelect" aria-label="Department" title="Department"><option value="">— Choose department —</option></select>
+      </div>
+      <div class="form-group">
+        <label id="actionRemarksLabel">Remarks (optional)</label>
+        <textarea id="actionRemarks" class="action-remarks" placeholder="Add any notes for the next person…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('actionModal')">Cancel</button>
+      <button class="btn btn-primary" id="actionConfirmBtn">
+        <span class="btn-text">Confirm</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/incoming.js"></script>
+</body>
+</html>
