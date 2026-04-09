@@ -2,7 +2,7 @@
    app.js  |  Shared utilities for all pages
    ═══════════════════════════════════════════════════════════ */
 
-const API = 'https://district-assembly-filling-app.onrender.com/api/v1';
+const API = window.API_BASE_URL + '/api/v1';
 
 // ── Auth ─────────────────────────────────────────────────────
 const Auth = {
