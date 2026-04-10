@@ -7,7 +7,7 @@ from app.core.security import verify_password, create_access_token, get_current_
 from app.models.user import User
 from app.repositories import UserRepository
 from app.schemas.schemas import TokenResponse, UserOut, PasswordChange
-from seed import seed
+
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -45,7 +45,3 @@ def change_password(
     current_user.hashed_password = hash_password(payload.new_password)
     repo.save(current_user)
 
-@router.post("/seed")
-def run_seed():
-    seed()
-    return {"message": "Database seeded successfully"}
