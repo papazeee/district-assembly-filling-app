@@ -2,7 +2,7 @@
    app.js  |  Shared utilities for all pages
    ═══════════════════════════════════════════════════════════ */
 
-const API = '$VITE_API_BASE_URL'.startsWith('$') ? 'http://localhost:8000/api/v1' : '$VITE_API_BASE_URL';
+const API = 'httphttps://district-assembly-filling-app.onrender.com/v1';
 
 // ── Auth ─────────────────────────────────────────────────────
 const Auth = {
