@@ -2,7 +2,7 @@
    app.js  |  Shared utilities for all pages
    ═══════════════════════════════════════════════════════════ */
 
-const API = window.API_BASE_URL + '/api/v1';
+const API = '$VITE_API_BASE_URL'.startsWith('$') ? 'http://localhost:8000/api/v1' : '$VITE_API_BASE_URL';
 
 // ── Auth ─────────────────────────────────────────────────────
 const Auth = {
