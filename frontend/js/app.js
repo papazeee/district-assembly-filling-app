@@ -8,11 +8,24 @@ function resolveApiBaseUrl() {
     return configured.replace(/\/$/, '');
   }
 
-  if (window.location.protocol === 'file:') {
+  const { protocol, hostname, origin } = window.location;
+
+  // Local static file usage.
+  if (protocol === 'file:') {
     return 'http://localhost:8000/api/v1';
   }
 
-  return `${window.location.origin}/api/v1`;
+  // Local dev servers (Live Server, Vite preview, etc.).
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8000/api/v1';
+  }
+
+  // Vercel deployment fallback in case rewrites are not applied.
+  if (hostname.endsWith('.vercel.app')) {
+    return 'https://district-assembly-filling-app.onrender.com/api/v1';
+  }
+
+  return `${origin}/api/v1`;
 }
 
 const API = resolveApiBaseUrl();
