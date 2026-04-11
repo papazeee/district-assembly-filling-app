@@ -163,6 +163,8 @@ The frontend is currently configured to call:
 
 - http://localhost:8000/api/v1
 
+You can override this at runtime by setting `window.__API_BASE_URL` or the `apiBaseUrl` value in `localStorage` before the app loads.
+
 ## Git Setup and Log Cleanup
 
 # Initialize repo and make first commit

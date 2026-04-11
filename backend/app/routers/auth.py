@@ -44,4 +44,3 @@ def change_password(
     repo = UserRepository(db)
     current_user.hashed_password = hash_password(payload.new_password)
     repo.save(current_user)
-

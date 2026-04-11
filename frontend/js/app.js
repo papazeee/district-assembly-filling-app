@@ -2,7 +2,20 @@
    app.js  |  Shared utilities for all pages
    ═══════════════════════════════════════════════════════════ */
 
-const API = 'https://district-assembly-filling-app.onrender.com/api/v1';
+function resolveApiBaseUrl() {
+  const configured = window.__API_BASE_URL || localStorage.getItem('apiBaseUrl');
+  if (configured) {
+    return configured.replace(/\/$/, '');
+  }
+
+  if (window.location.protocol === 'file:') {
+    return 'http://localhost:8000/api/v1';
+  }
+
+  return `${window.location.origin}/api/v1`;
+}
+
+const API = resolveApiBaseUrl();
 
 // ── Auth ─────────────────────────────────────────────────────
 const Auth = {
