@@ -5,12 +5,26 @@ FastAPI Backend
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
 
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.routers import auth, users, departments, letters, notifications
 
 Base.metadata.create_all(bind=engine)
+
+
+def ensure_postgres_enum_values() -> None:
+    """Ensure PostgreSQL enum types include all application enum values."""
+    if engine.dialect.name != "postgresql":
+        return
+
+    # Needed for environments where the enum type was created before TEST_USER existed.
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TYPE userrole ADD VALUE IF NOT EXISTS 'TEST_USER'"))
+
+
+ensure_postgres_enum_values()
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -26,12 +40,13 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "null",
         "http://localhost:3000",
         "http://localhost:5500",
         "http://127.0.0.1:5500",
         "http://localhost:8000",
     ],
-    allow_origin_regex=r"https://.*\.vercel\.app$",
+    allow_origin_regex=r"^(null|https://.*\.vercel\.app)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

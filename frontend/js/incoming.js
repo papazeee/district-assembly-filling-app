@@ -235,7 +235,7 @@ document.getElementById('actionConfirmBtn').addEventListener('click', async () =
 
 // ── Log new letter ────────────────────────────────────────────
 // Show log button only for allowed roles
-if (!canLog()) {
+if (!canLog() && !isTestUser()) {
   document.getElementById('logBtnWrap').style.display = 'none';
 }
 

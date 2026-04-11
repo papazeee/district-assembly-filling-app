@@ -21,6 +21,7 @@ class UserRole(str, enum.Enum):
     DIRECTOR        = "DIRECTOR"          # Director of the Assembly
     DCE             = "DCE"               # District Chief Executive
     DEPARTMENT_HEAD = "DEPARTMENT_HEAD"   # Head of any functional department
+    TEST_USER       = "TEST_USER"         # Read-only admin; cannot modify Departments or Users
 
 
 class LetterType(str, enum.Enum):

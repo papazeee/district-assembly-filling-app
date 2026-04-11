@@ -3,10 +3,16 @@
    ═══════════════════════════════════════════════════════════ */
 
 Auth.guard();
-if (!isAdmin()) {
+if (!isAdminOrTestUser()) {
   window.location.href = 'dashboard.html';
 }
-document.addEventListener('DOMContentLoaded', () => initSidebar('nav-departments'));
+document.addEventListener('DOMContentLoaded', () => {
+  initSidebar('nav-departments');
+  if (isTestUser()) {
+    const btn = document.getElementById('openCreateBtn');
+    if (btn) { btn.hidden = true; btn.style.display = 'none'; }
+  }
+});
 
 let allDepts = [];
 
@@ -34,16 +40,22 @@ function renderTable(depts) {
       <td style="color:var(--muted);max-width:280px;">${d.description || '—'}</td>
       <td><span class="badge ${d.is_active ? 'badge-closed' : 'badge-outgoing'}">${d.is_active ? 'Active' : 'Inactive'}</span></td>
       <td>
-        <div class="td-actions">
-          <button class="btn btn-outline btn-sm" onclick="editDept(${d.id})">Edit</button>
-          <button class="btn btn-sm ${d.is_active ? 'btn-danger' : 'btn-success'}" onclick="toggleActive(${d.id}, ${d.is_active}, '${d.name}')">${d.is_active ? 'Deactivate' : 'Activate'}</button>
-        </div>
+        ${canAdminWrite()
+          ? `<div class="td-actions">
+               <button class="btn btn-outline btn-sm" onclick="editDept(${d.id})">Edit</button>
+               <button class="btn btn-sm ${d.is_active ? 'btn-danger' : 'btn-success'}" onclick="toggleActive(${d.id}, ${d.is_active}, '${d.name}')">${d.is_active ? 'Deactivate' : 'Activate'}</button>
+             </div>`
+          : '<span style="color:var(--muted);font-size:.8rem;font-style:italic;">View only</span>'}
       </td>
     </tr>
   `).join('');
 }
 
 document.getElementById('openCreateBtn').addEventListener('click', () => {
+  if (isTestUser()) {
+    showToast('Test users do not have permission to make changes in this section. Please contact an administrator for assistance.', 'error');
+    return;
+  }
   document.getElementById('deptModalTitle').textContent = 'Add Department';
   document.getElementById('deptForm').reset();
   document.getElementById('editDeptId').value = '';
@@ -65,6 +77,10 @@ function editDept(id) {
 }
 
 document.getElementById('deptSubmitBtn').addEventListener('click', async () => {
+  if (isTestUser()) {
+    showToast('Test users do not have permission to make changes in this section. Please contact an administrator for assistance.', 'error');
+    return;
+  }
   const btn = document.getElementById('deptSubmitBtn');
   const alert = document.getElementById('deptAlert');
   const editId = document.getElementById('editDeptId').value;
@@ -107,6 +123,10 @@ document.getElementById('deptSubmitBtn').addEventListener('click', async () => {
 });
 
 async function toggleActive(id, isActive, name) {
+  if (isTestUser()) {
+    showToast('Test users do not have permission to make changes in this section. Please contact an administrator for assistance.', 'error');
+    return;
+  }
   const action = isActive ? 'deactivate' : 'activate';
   if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} ${name}?`)) return;
 

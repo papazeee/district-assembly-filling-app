@@ -169,6 +169,7 @@ Detailed backend API and workflow docs are in:
 
 - backend/README.md
 
+
 ## Roadmap
 
 Planned improvements are focused on hardening the system and making it easier to operate at scale:
@@ -183,4 +184,4 @@ Planned improvements are focused on hardening the system and making it easier to
 - Accessibility and mobile usability improvements across the frontend
 - Safer operational controls such as stronger audit reporting, backup guidance, and admin recovery flows
 
-The app already covers the core filing workflow, so the next steps should focus on reliability, observability, and day-to-day admin usability rather than adding more duplicate screens.
+The app already covers the core filing workflow, so the next steps will focus on reliability, observability, and day-to-day admin usability

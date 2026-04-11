@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     MAX_FILE_SIZE_MB: int = 10
 
     APP_NAME: str = "Ada East District Assembly - Digital Filing System"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "1.0.1"
     DEBUG: bool = True
 
     class Config:

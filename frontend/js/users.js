@@ -3,8 +3,14 @@
    ═══════════════════════════════════════════════════════════ */
 
 Auth.guard();
-if (!isAdmin()) { window.location.href = 'dashboard.html'; }
-document.addEventListener('DOMContentLoaded', () => initSidebar('nav-users'));
+if (!isAdminOrTestUser()) { window.location.href = 'dashboard.html'; }
+document.addEventListener('DOMContentLoaded', () => {
+  initSidebar('nav-users');
+  if (isTestUser()) {
+    const btn = document.getElementById('openCreateBtn');
+    if (btn) { btn.hidden = true; btn.style.display = 'none'; }
+  }
+});
 
 let allUsers    = [];
 let departments = [];
@@ -15,17 +21,40 @@ const ROLE_LABELS = {
   DIRECTOR:        'Director',
   DCE:             'DCE',
   DEPARTMENT_HEAD: 'Dept. Head',
+  TEST_USER:       'Test User',
 };
+
+async function readResponseError(res, fallbackMessage) {
+  if (!res) return fallbackMessage;
+
+  const raw = await res.text();
+  if (!raw) return fallbackMessage;
+
+  try {
+    const data = JSON.parse(raw);
+    return data.detail || data.message || fallbackMessage;
+  } catch {
+    return raw.trim() || fallbackMessage;
+  }
+}
 
 // ── Load data ─────────────────────────────────────────────────
 async function loadUsers() {
   const res = await apiFetch('/users/');
+  if (!res || !res.ok) {
+    showToast(await readResponseError(res, 'Failed to load users.'), 'error');
+    return;
+  }
   allUsers  = await res.json();
   renderTable(allUsers);
 }
 
 async function loadDepartments() {
   const res   = await apiFetch('/departments/');
+  if (!res || !res.ok) {
+    showToast(await readResponseError(res, 'Failed to load departments.'), 'error');
+    return;
+  }
   departments = await res.json();
   const sel   = document.getElementById('f_department_id');
   departments.forEach(d => {
@@ -64,12 +93,14 @@ function renderTable(users) {
         <span class="badge ${u.is_active ? 'badge-closed' : 'badge-outgoing'}">${u.is_active ? 'Active' : 'Inactive'}</span>
       </td>
       <td>
-        <div class="td-actions">
-          <button class="btn btn-outline btn-sm" onclick="editUser(${u.id})">Edit</button>
-          ${u.id !== Auth.user()?.id
-            ? `<button class="btn btn-sm ${u.is_active ? 'btn-danger' : 'btn-success'}" onclick="toggleActive(${u.id}, ${u.is_active}, '${u.name}')">${u.is_active ? 'Deactivate' : 'Activate'}</button>`
-            : ''}
-        </div>
+        ${canAdminWrite()
+          ? `<div class="td-actions">
+               <button class="btn btn-outline btn-sm" onclick="editUser(${u.id})">Edit</button>
+               ${u.id !== Auth.user()?.id
+                 ? `<button class="btn btn-sm ${u.is_active ? 'btn-danger' : 'btn-success'}" onclick="toggleActive(${u.id}, ${u.is_active}, '${u.full_name}')">${u.is_active ? 'Deactivate' : 'Activate'}</button>`
+                 : ''}
+             </div>`
+          : '<span style="color:var(--muted);font-size:.8rem;font-style:italic;">View only</span>'}
       </td>
     </tr>
   `).join('');
@@ -77,6 +108,10 @@ function renderTable(users) {
 
 // ── Create user ───────────────────────────────────────────────
 document.getElementById('openCreateBtn').addEventListener('click', () => {
+  if (isTestUser()) {
+    showToast('Test users do not have permission to make changes in this section. Please contact an administrator for assistance.', 'error');
+    return;
+  }
   document.getElementById('userModalTitle').textContent = 'Add User';
   document.getElementById('userForm').reset();
   document.getElementById('editUserId').value = '';
@@ -105,6 +140,10 @@ function editUser(id) {
 
 // ── Save user ─────────────────────────────────────────────────
 document.getElementById('userSubmitBtn').addEventListener('click', async () => {
+  if (isTestUser()) {
+    showToast('Test users do not have permission to make changes in this section. Please contact an administrator for assistance.', 'error');
+    return;
+  }
   const btn     = document.getElementById('userSubmitBtn');
   const alert   = document.getElementById('userAlert');
   const editId  = document.getElementById('editUserId').value;
@@ -139,8 +178,7 @@ document.getElementById('userSubmitBtn').addEventListener('click', async () => {
     const res = await apiFetch(url, { method, body: JSON.stringify(body) });
 
     if (!res.ok) {
-      const err = await res.json();
-      showAlert(alert, err.detail || 'Failed to save user.');
+      showAlert(alert, await readResponseError(res, 'Failed to save user.'));
       return;
     }
 
@@ -148,8 +186,8 @@ document.getElementById('userSubmitBtn').addEventListener('click', async () => {
     closeModal('userModal');
     loadUsers();
 
-  } catch {
-    showAlert(alert, 'Network error. Please try again.');
+  } catch (err) {
+    showAlert(alert, err?.message || 'Network error. Please try again.');
   } finally {
     btn.classList.remove('loading');
   }
@@ -172,6 +210,10 @@ async function deactivateUser(id, name) {
 
 // Toggle active
 async function toggleActive(id, isActive, name) {
+  if (isTestUser()) {
+    showToast('Test users do not have permission to make changes in this section. Please contact an administrator for assistance.', 'error');
+    return;
+  }
   const action = isActive ? 'deactivate' : 'activate';
   if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} ${name}?`)) return;
   const res = await apiFetch(`/users/id/${id}`, {

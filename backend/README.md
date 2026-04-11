@@ -63,3 +63,5 @@ Open http://localhost:8000/docs for Swagger UI.
 - The default admin account is created by seeding. Change the password immediately.
 - Before deployment, set a strong `SECRET_KEY` and lock down CORS origins.
 - Uploaded files are served from `/uploads`, so the upload directory must remain writable.
+
+Current app version: v1.0.1

@@ -12,12 +12,12 @@ function resolveApiBaseUrl() {
 
   // Local static file usage.
   if (protocol === 'file:') {
-    return 'http://localhost:8000/api/v1';
+    return 'http://127.0.0.1:8000/api/v1';
   }
 
   // Local dev servers (Live Server, Vite preview, etc.).
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8000/api/v1';
+    return 'http://127.0.0.1:8000/api/v1';
   }
 
   // Vercel deployment fallback in case rewrites are not applied.
@@ -59,7 +59,7 @@ const Auth = {
         body,
       });
     } catch {
-      throw new Error('Cannot reach server. Please try again.');
+      throw new Error(`Cannot reach API at ${API}. Please confirm the backend is running.`);
     }
 
     const raw = await res.text();
@@ -165,10 +165,15 @@ const Auth = {
 
 // ── API fetch wrapper ────────────────────────────────────────
 async function apiFetch(path, options = {}) {
-  const res = await fetch(`${API}${path}`, {
-    headers: Auth.headers(),
-    ...options,
-  });
+  let res;
+  try {
+    res = await fetch(`${API}${path}`, {
+      headers: Auth.headers(),
+      ...options,
+    });
+  } catch {
+    throw new Error(`Cannot reach API at ${API}. Please confirm the backend is running.`);
+  }
 
   if (res.status === 401) { Auth.logout(); return; }
   return res;
@@ -296,8 +301,8 @@ function initSidebar(activeNav) {
   const active = document.getElementById(activeNav);
   if (active) active.classList.add('active');
 
-  // Admin-only links
-  if (user.role === 'ADMIN') {
+  // Admin-only links (TEST_USER also gets sidebar access but with restricted write permissions)
+  if (user.role === 'ADMIN' || user.role === 'TEST_USER') {
     document.querySelectorAll('.admin-only').forEach((el) => {
       el.hidden = false;
       el.style.display = '';
@@ -352,3 +357,6 @@ function canForward()  { return hasRole('RECORDS', 'ADMIN'); }
 function isDirector()  { return hasRole('DIRECTOR', 'ADMIN'); }
 function isDCE()       { return hasRole('DCE', 'ADMIN'); }
 function isAdmin()     { return hasRole('ADMIN'); }
+function isTestUser()  { return hasRole('TEST_USER'); }
+function isAdminOrTestUser() { return hasRole('ADMIN', 'TEST_USER'); }
+function canAdminWrite()     { return hasRole('ADMIN'); } // TEST_USER excluded

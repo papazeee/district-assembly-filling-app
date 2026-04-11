@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import require_roles, get_current_user
+from app.core.security import require_roles, require_write_access, get_current_user
 from app.models.user import Department, UserRole, User
 from app.repositories import DepartmentRepository
 from app.schemas.schemas import DepartmentCreate, DepartmentUpdate, DepartmentOut
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/departments", tags=["Departments"])
 def create_department(
     payload: DepartmentCreate,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     repo = DepartmentRepository(db)
     if repo.code_exists(payload.code):
@@ -51,7 +51,7 @@ def update_department(
     dept_id: int,
     payload: DepartmentUpdate,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     repo = DepartmentRepository(db)
     dept = repo.get_by_id(dept_id)
@@ -64,7 +64,7 @@ def update_department(
 @router.get("/list deleted", response_model=List[DepartmentOut])
 def list_deleted_departments(
     db: Session = Depends(get_db),
-   # _admin: User = Depends(require_roles(UserRole.ADMIN)),
+   # _admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     repo = DepartmentRepository(db)
     dept = repo.get_all_deleted()
@@ -74,7 +74,7 @@ def list_deleted_departments(
 def delete_department(
     dept_code: str,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     repo = DepartmentRepository(db)
     dept_code = dept_code.upper()
@@ -90,7 +90,7 @@ def delete_department(
 def restore_department(
     dept_code: str,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     repo = DepartmentRepository(db)
     dept_code = dept_code.upper()

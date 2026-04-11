@@ -154,7 +154,7 @@ async function markSent(id) {
 }
 
 // ── Log new outgoing ──────────────────────────────────────────
-if (!canLog()) document.getElementById('logBtnWrap').style.display = 'none';
+if (!canLog() && !isTestUser()) document.getElementById('logBtnWrap').style.display = 'none';
 
 document.getElementById('openLogBtn')?.addEventListener('click', () => {
   document.getElementById('logForm').reset();

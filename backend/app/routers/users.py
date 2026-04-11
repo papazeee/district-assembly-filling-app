@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_user, require_roles, hash_password
+from app.core.security import get_current_user, require_roles, require_write_access, hash_password
 from app.models.user import User, UserRole
 from app.repositories import UserRepository
 from app.schemas.schemas import UserCreate, UserUpdate, UserOut
@@ -36,7 +36,7 @@ def create_user(
 @router.get("/", response_model=List[UserOut])
 def list_users(
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_roles(UserRole.ADMIN, UserRole.TEST_USER)),
 ):
     """Admin lists all user accounts."""
     return UserRepository(db).get_all_users()
@@ -46,7 +46,7 @@ def list_users(
 def get_user(
     user_id: int,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_roles(UserRole.ADMIN, UserRole.TEST_USER)),
 ):
     user = UserRepository(db).get_by_id(user_id)
     if not user:
@@ -59,7 +59,7 @@ def update_user(
     user_id: int,
     payload: UserUpdate,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     """Admin updates a user's profile or role."""
     repo = UserRepository(db)
@@ -76,7 +76,7 @@ def update_user(
 def deactivate_user(
     user_id: int,
     db: Session = Depends(get_db),
-    current_admin: User = Depends(require_roles(UserRole.ADMIN)),
+    current_admin: User = Depends(require_write_access(UserRole.ADMIN)),
 ):
     """Admin deactivates (soft-deletes) a user. Cannot deactivate yourself."""
     if user_id == current_admin.id:
@@ -91,7 +91,7 @@ def deactivate_user(
 def restore_deactivated_users(
     user_id: int,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN))
+    _admin: User = Depends(require_write_access(UserRole.ADMIN))
 ):
     repo = UserRepository(db)
     user = repo.get_by_id(user_id)
@@ -104,7 +104,7 @@ def restore_deactivated_users(
 @router.get("/deleted")
 def deativated_users(
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_roles(UserRole.ADMIN)),
+    _admin: User = Depends(require_roles(UserRole.ADMIN, UserRole.TEST_USER)),
 ):
     repo = UserRepository(db)
     user = repo.get_deactivated()

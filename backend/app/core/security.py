@@ -63,3 +63,25 @@ def require_roles(*roles):
             )
         return current_user
     return _checker
+
+
+def require_write_access(*roles):
+    """Like require_roles but explicitly blocks TEST_USER from write actions."""
+    from app.models.user import UserRole  # local import to avoid circular deps
+
+    def _checker(current_user=Depends(get_current_user)):
+        if current_user.role == UserRole.TEST_USER:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=(
+                    "Test users do not have permission to make changes in this section. "
+                    "Please contact an administrator for assistance."
+                ),
+            )
+        if current_user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied. Required roles: {list(roles)}",
+            )
+        return current_user
+    return _checker
