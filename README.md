@@ -4,7 +4,17 @@ A full-stack web application for managing incoming and outgoing official letters
 
 ## Project Overview
 
-This system digitizes letter tracking across the full workflow, from records intake to the director and DCE review, department dispatch, and closure.
+This system digitizes official letter handling across the full workflow, from records intake to director and DCE review, department dispatch, closure, and outgoing dispatch tracking.
+
+## Current Capabilities
+
+- Role-based authentication with JWT login and password changes
+- Incoming letter registration with file uploads, serial generation, and audit logging
+- Outgoing letter creation with dispatch status tracking and file uploads
+- Letter routing from Records to Director, DCE, and departments with notifications at each step
+- Department and user administration, including soft-delete and restore actions
+- Per-user notifications with read / unread tracking
+- Search, filtering, and detail views for letters with full audit trail history
 
 ## Tech Stack
 
@@ -21,7 +31,7 @@ This system digitizes letter tracking across the full workflow, from records int
 - **User Management**: Create and manage system users with different roles and permissions
 - **Notifications**: Automatic notifications for letter movements and status updates
 - **Dashboard**: Overview of system activity with quick access to all main functions
-- **Digital Storage**: Centralized PDF storage for all incoming and outgoing letters
+- **Digital Storage**: Centralized file storage for all incoming and outgoing letters
 - **Serial Number Generation**: Automatic unique serial numbering for outgoing letters
 
 ## App Workflow
@@ -67,67 +77,30 @@ This system digitizes letter tracking across the full workflow, from records int
 ```
 .
 ├── README.md                         # Main project documentation
-├── demo/                             # App demo video files
-│   └── .gitkeep
-├── styles.css                        # Root-level global styles
-├── backend/                          # FastAPI backend application
-│   ├── README.md                     # Backend-specific API documentation
-│   ├── main.py                       # FastAPI app initialization and routes setup
-│   ├── requirements.txt              # Python dependencies
-│   ├── seed.py                       # Initial database setup (admin user, departments)
-│   └── app/
-│       ├── __init__.py
-│       ├── core/                     # Configuration, database setup, JWT security
-│       │   ├── __init__.py
-│       │   ├── config.py             # Environment variables and app settings
-│       │   ├── database.py           # SQLAlchemy session and DB initialization
-│       │   └── security.py           # JWT token creation and user verification
-│       ├── models/                   # SQLAlchemy ORM models (database tables)
-│       │   ├── __init__.py
-│       │   └── user.py               # User model with roles and departments
-│       ├── repositories/             # Data access layer (queries)
-│       │   ├── __init__.py
-│       │   ├── base.py               # Base repository for common CRUD operations
-│       │   ├── department_repo.py    # Department queries
-│       │   ├── letter_repo.py        # Letter (incoming/outgoing) queries
-│       │   ├── notification_repo.py  # Notification queries
-│       │   └── user_repo.py          # User queries and lookups
-│       ├── routers/                  # API endpoints (routes)
-│       │   ├── __init__.py
-│       │   ├── auth.py               # Login and token endpoints
-│       │   ├── departments.py        # Department management endpoints
-│       │   ├── letters.py            # Letter creation, retrieval, updates
-│       │   ├── notifications.py      # Notification endpoints
-│       │   └── users.py              # User management endpoints
-│       ├── schemas/                  # Pydantic schemas (request/response validation)
-│       │   ├── __init__.py
-│       │   └── schemas.py            # All request and response data models
-│       └── services/                 # Business logic and workflows
-│           ├── __init__.py
-│           ├── notifications.py      # Notification creation and delivery
-│           └── serial.py             # Letter serial number generation
-├── uploads/                          # Uploaded letter files storage
-│   ├── incoming/                     # Incoming letters uploads
-│   └── outgoing/                     # Outgoing letters uploads
-├── frontend/                         # HTML, CSS, JavaScript user interface
-│   ├── css/                          # Stylesheets (modular CSS architecture)
-│   │   ├── components.css            # Reusable UI components (buttons, cards, modals)
-│   │   ├── layout.css                # Page layout and grid structure
-│   │   ├── login.css                 # Login-specific styles
-│   │   └── variables.css             # Color, font, and spacing variables
-│   ├── js/                           # JavaScript functionality
-│   │   ├── app.js                    # Main app initialization and utilities
-│   │   ├── dashboard.js              # Dashboard page logic
-│   │   ├── departments.js            # Department management page logic
-│   │   ├── incoming.js               # Incoming letters page logic
-│   │   ├── letter-detail.js          # Letter details page logic
-│   │   ├── login.js                  # Login form and authentication
-│   │   ├── notifications.js          # Notifications page logic
-│   │   ├── outgoing.js               # Outgoing letters page logic
-│   │   ├── profile.js                # User profile page logic
-│   │   ├── sidebar.js                # Navigation sidebar toggle
-│   │   └── users.js                  # User management page logic
-│   └── pages/                        # HTML pages
+├── LICENSE
+├── styles.css                        # Shared root-level styles for the landing page
+├── vercel.json                       # Frontend deployment and API proxy config
+├── demo/                             # Demo video assets
+├── screenshots/                      # UI preview images used in documentation
+├── frontend/                         # Static HTML, CSS, and vanilla JavaScript UI
+│   ├── index.html                    # Entry redirect to the login page
+│   ├── css/
+│   │   ├── variables.css            # Theme tokens, spacing, and color variables
+│   │   ├── layout.css               # Page structure and responsive layout
+│   │   ├── components.css           # Shared UI components
+│   │   └── login.css                # Login page styles
+│   ├── js/
+│   │   ├── app.js                   # Shared API/auth utilities and UI helpers
+│   │   ├── dashboard.js             # Dashboard data and summaries
+│   │   ├── departments.js          # Department management UI
+│   │   ├── incoming.js             # Incoming letter workflow UI
+│   │   ├── outgoing.js             # Outgoing letter workflow UI
+│   │   ├── letter-detail.js         # Full letter details and audit trail view
+│   │   ├── notifications.js         # Notification inbox and read actions
+│   │   ├── profile.js               # Profile and password change UI
+│   │   ├── sidebar.js               # Navigation and sidebar behavior
+│   │   └── users.js                 # User administration UI
+│   └── pages/
 │       ├── 404.html
 │       ├── dashboard.html
 │       ├── departments.html
@@ -138,7 +111,23 @@ This system digitizes letter tracking across the full workflow, from records int
 │       ├── outgoing.html
 │       ├── profile.html
 │       └── users.html
-└── screenshots/                      # UI preview images used in documentation
+├── backend/                          # FastAPI backend application
+│   ├── README.md                    # Backend API overview and run instructions
+│   ├── .env.example                 # Example environment variables
+│   ├── main.py                      # FastAPI app setup, CORS, and route registration
+│   ├── requirements.txt             # Python dependencies
+│   ├── runtime.txt                  # Runtime version for deployment
+│   ├── seed.py                      # Initial admin user and department seed data
+│   └── app/
+│       ├── core/                    # Configuration, database, and security helpers
+│       ├── models/                  # SQLAlchemy ORM models and enums
+│       ├── repositories/            # Data access layer for users, letters, departments, notifications
+│       ├── routers/                 # API endpoints for auth, users, departments, letters, notifications
+│       ├── schemas/                 # Pydantic request and response models
+│       └── services/                # Workflow helpers such as serial generation and notifications
+└── uploads/                          # Stored incoming/outgoing letter attachments
+    ├── incoming/
+    └── outgoing/
 ```
 
 ## Quick Start
@@ -153,24 +142,25 @@ python seed.py
 uvicorn main:app --reload
 ```
 
-The backend runs at http://localhost:8000 and docs are at http://localhost:8000/docs. Swagger UI
-
 ### 2. Open frontend
+- Run index.html
 
-Open frontend/pages/login_index.html in a browser (or serve the frontend folder with a static server).
+#### Frontend Configuration
 
-The frontend is currently configured to call:
+The frontend automatically detects its environment and configures 
+the API URL accordingly:
 
-- http://localhost:8000/api/v1
+- **Deployed (Vercel)** — API calls are proxied through Vercel to 
+  the live backend. No configuration needed.
 
-You can override this at runtime by setting `window.__API_BASE_URL` or the `apiBaseUrl` value in `localStorage` before the app loads.
+- **Local (file://)** — API calls go to `http://localhost:8000/api/v1`. 
+  Make sure the backend is running locally.
 
-## Git Setup and Log Cleanup
+- **Local (live server)** — API calls go to the same origin. 
+  Make sure your local server proxies `/api/v1` to the backend.
 
-# Initialize repo and make first commit
-git init
-git add .
-git commit -m "Initial commit"
+To override the API URL manually, set it in your browser console:
+  localStorage.setItem('apiBaseUrl', 'https://your-backend.com/api/v1');
 
 
 ## API + Workflow Documentation
@@ -179,18 +169,18 @@ Detailed backend API and workflow docs are in:
 
 - backend/README.md
 
-## Security Notes Before Production
-
-- Set a strong SECRET_KEY in backend/.env
-- Change default seeded admin password immediately
-- Restrict CORS allow_origins in backend/main.py
-- Never commit backend/.env or local database files
-
 ## Roadmap
 
-Planned improvements:
+Planned improvements are focused on hardening the system and making it easier to operate at scale:
 
-- Automated tests
-- CI checks on push
-- Docker setup
-- Better deployment documentation
+- Automated tests for auth, workflow transitions, repositories, and key UI flows
+- CI checks on push for formatting, linting, and backend test coverage
+- Docker-based local and production setup for simpler onboarding and deployment
+- Better environment and deployment documentation for local, staging, and production use
+- Search, filtering, and pagination improvements for large letter and user lists
+- Activity reporting and exports for dashboards, turnaround times, and department workloads
+- File preview and download polish for letter attachments
+- Accessibility and mobile usability improvements across the frontend
+- Safer operational controls such as stronger audit reporting, backup guidance, and admin recovery flows
+
+The app already covers the core filing workflow, so the next steps should focus on reliability, observability, and day-to-day admin usability rather than adding more duplicate screens.
