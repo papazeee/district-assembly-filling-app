@@ -1,20 +1,35 @@
 # Ada East Digital Filing System
 
-A full-stack web application for managing incoming and outgoing official letters for the Ada East District Assembly.
+## Live Demo: https://district-assembly-filling-app-h6ri.vercel.app
+ ### Test Credentials
+ - Email: testuser@adaeast.gov.gh
+ - Password: test_user
 
 ## Project Overview
 
-This system digitizes official letter handling across the full workflow, from records intake to director and DCE review, department dispatch, closure, and outgoing dispatch tracking.
+A full-stack web application designed to digitize and streamline the handling of incoming and outgoing official letters within the Ada East District Assembly, Ghana.
+
+## Why This Project Matters
+District Assemblies often rely on manual filling systems that are:
+- Slow
+- Difficult to track
+- Prone to errors and loss of documents
+
+This system improves:
+- Accountability
+- Transparency
+- Workflow efficiency
+- Document traceability
 
 ## Current Capabilities
 
-- Role-based authentication with JWT login and password changes
-- Incoming letter registration with file uploads, serial generation, and audit logging
-- Outgoing letter creation with dispatch status tracking and file uploads
-- Letter routing from Records to Director, DCE, and departments with notifications at each step
-- Department and user administration, including soft-delete and restore actions
-- Per-user notifications with read / unread tracking
-- Search, filtering, and detail views for letters with full audit trail history
+- Role-based authentication (Admin, Records Officer, District Director, DCE, Department Head)
+- Full letter workflow form intake -> review -> dispatch -> closure
+- Incoming and Outgoing letter management with file uploads
+- Real-time notification with read/unread tracking
+- Audit trail for all actions
+- Department and user management
+- Search, filtering, and detail views
 
 ## Tech Stack
 
@@ -39,7 +54,7 @@ This system digitizes official letter handling across the full workflow, from re
 1. A user logs in with role-based access control.
 2. Records staff register incoming letters and upload any attachments.
 3. The Director reviews incoming letters and forwards them to the DCE or dispatches them to a department.
-4. The DCE can return letters to the Director when needed.
+4. The DCE can approve and return letters to the Director
 5. Department heads receive dispatched letters, work on them, add a report, and return them to the Director.
 6. The Director closes completed letters when the workflow is finished.
 7. Users create outgoing letters, assign dispatch details, and mark them as sent.
@@ -71,7 +86,10 @@ This system digitizes official letter handling across the full workflow, from re
 
 [Watch Full App Demo](demo/app-demo.mp4)
 
-
+## Challenges Faced
+- Designing role-based workflows across multiple users
+- Handling file uploads
+  
 ## Repository Structure
 
 ```
@@ -172,16 +190,11 @@ Detailed backend API and workflow docs are in:
 
 ## Roadmap
 
-Planned improvements are focused on hardening the system and making it easier to operate at scale:
-
 - Automated tests for auth, workflow transitions, repositories, and key UI flows
-- CI checks on push for formatting, linting, and backend test coverage
-- Docker-based local and production setup for simpler onboarding and deployment
-- Better environment and deployment documentation for local, staging, and production use
-- Search, filtering, and pagination improvements for large letter and user lists
-- Activity reporting and exports for dashboards, turnaround times, and department workloads
-- File preview and download polish for letter attachments
-- Accessibility and mobile usability improvements across the frontend
-- Safer operational controls such as stronger audit reporting, backup guidance, and admin recovery flows
+- CI/CD integration
+- Docker support
+- Improved search and pagination
+- Better UI/UX mobile responsiveness
+- Reporting and analytics
 
-The app already covers the core filing workflow, so the next steps will focus on reliability, observability, and day-to-day admin usability
+The app already covers the core filing workflow, so the next steps will focus on reliability, observability, and day-to-day usability
